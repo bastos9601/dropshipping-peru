@@ -13,7 +13,7 @@ import Navbar from '@/componentes/Navbar';
 export default function AdminPanel() {
   const router = useRouter();
   const [usuario, setUsuario] = useState<any>(null);
-  const [vistaActual, setVistaActual] = useState<'dashboard' | 'usuarios' | 'productos' | 'configuracion'>('dashboard');
+  const [vistaActual, setVistaActual] = useState<'dashboard' | 'usuarios' | 'productos' | 'categorias' | 'configuracion'>('dashboard');
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [productos, setProductos] = useState<any[]>([]);
   const [ventas, setVentas] = useState<any[]>([]);
@@ -101,43 +101,53 @@ export default function AdminPanel() {
           <p className="text-gray-600">Gestiona todo el sistema desde aquí</p>
         </div>
 
-        <div className="flex space-x-4 mb-8">
+        <div className="flex flex-wrap gap-3 mb-8">
           <button
             onClick={() => setVistaActual('dashboard')}
-            className={`px-4 py-2 rounded-md ${
+            className={`flex-1 min-w-[140px] px-6 py-3 rounded-lg font-bold transition-all shadow-sm ${
               vistaActual === 'dashboard'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
             }`}
           >
             Dashboard
           </button>
           <button
             onClick={() => setVistaActual('usuarios')}
-            className={`px-4 py-2 rounded-md ${
+            className={`flex-1 min-w-[140px] px-6 py-3 rounded-lg font-bold transition-all shadow-sm ${
               vistaActual === 'usuarios'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
             }`}
           >
             Usuarios
           </button>
           <button
             onClick={() => setVistaActual('productos')}
-            className={`px-4 py-2 rounded-md ${
+            className={`flex-1 min-w-[140px] px-6 py-3 rounded-lg font-bold transition-all shadow-sm ${
               vistaActual === 'productos'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
             }`}
           >
             Productos
           </button>
           <button
+            onClick={() => setVistaActual('categorias')}
+            className={`flex-1 min-w-[140px] px-6 py-3 rounded-lg font-bold transition-all shadow-sm ${
+              vistaActual === 'categorias'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
+            }`}
+          >
+            Categorías
+          </button>
+          <button
             onClick={() => setVistaActual('configuracion')}
-            className={`px-4 py-2 rounded-md ${
+            className={`flex-1 min-w-[140px] px-6 py-3 rounded-lg font-bold transition-all shadow-sm ${
               vistaActual === 'configuracion'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
             }`}
           >
             Configuración
@@ -154,6 +164,10 @@ export default function AdminPanel() {
 
         {vistaActual === 'productos' && (
           <ProductosView productos={productos} onRecargar={cargarDatos} />
+        )}
+
+        {vistaActual === 'categorias' && (
+          <CategoriasView />
         )}
 
         {vistaActual === 'configuracion' && (
@@ -360,14 +374,18 @@ function UsuariosView({ usuarios, onRecargar }: any) {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => abrirEdicion(user)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm"
                       title="Editar"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => toggleActivo(user)}
-                      className={user.activo ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800'}
+                      className={`p-2 rounded-lg transition-colors shadow-sm text-white ${
+                        user.activo 
+                          ? 'bg-orange-500 hover:bg-orange-600' 
+                          : 'bg-green-500 hover:bg-green-600'
+                      }`}
                       title={user.activo ? 'Desactivar' : 'Activar'}
                     >
                       {user.activo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -375,7 +393,7 @@ function UsuariosView({ usuarios, onRecargar }: any) {
                     {!user.es_admin && (
                       <button
                         onClick={() => eliminarUsuario(user)}
-                        className="text-red-600 hover:text-red-800"
+                        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-sm"
                         title="Eliminar"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -869,6 +887,242 @@ function ConfiguracionView() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function CategoriasView() {
+  const [categorias, setCategorias] = useState<any[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [editando, setEditando] = useState<string | null>(null);
+  const [nuevaCategoria, setNuevaCategoria] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: '',
+    descripcion: '',
+    icono: 'Package',
+    activo: true,
+    orden: 0
+  });
+
+  useEffect(() => {
+    cargarCategorias();
+  }, []);
+
+  const cargarCategorias = async () => {
+    const { data } = await supabase
+      .from('categorias')
+      .select(`
+        *,
+        usuario:usuarios(email, nombre_tienda)
+      `)
+      .order('orden', { ascending: true });
+
+    if (data) {
+      setCategorias(data);
+    }
+    setCargando(false);
+  };
+
+  const guardarCategoria = async () => {
+    if (!formData.nombre.trim()) {
+      alert('El nombre es requerido');
+      return;
+    }
+
+    if (editando) {
+      const { error } = await supabase
+        .from('categorias')
+        .update(formData)
+        .eq('id', editando);
+
+      if (error) {
+        alert('Error al actualizar: ' + error.message);
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from('categorias')
+        .insert([formData]);
+
+      if (error) {
+        alert('Error al crear: ' + error.message);
+        return;
+      }
+    }
+
+    setEditando(null);
+    setNuevaCategoria(false);
+    setFormData({ nombre: '', descripcion: '', icono: 'Package', activo: true, orden: 0 });
+    cargarCategorias();
+  };
+
+  const eliminarCategoria = async (id: string) => {
+    if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
+
+    const { error } = await supabase
+      .from('categorias')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      alert('Error al eliminar: ' + error.message);
+      return;
+    }
+
+    cargarCategorias();
+  };
+
+  const editarCategoria = (categoria: any) => {
+    setEditando(categoria.id);
+    setFormData({
+      nombre: categoria.nombre,
+      descripcion: categoria.descripcion || '',
+      icono: categoria.icono || 'Package',
+      activo: categoria.activo,
+      orden: categoria.orden
+    });
+  };
+
+  const cancelar = () => {
+    setEditando(null);
+    setNuevaCategoria(false);
+    setFormData({ nombre: '', descripcion: '', icono: 'Package', activo: true, orden: 0 });
+  };
+
+  if (cargando) {
+    return <div className="text-center py-12">Cargando categorías...</div>;
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-md">
+      <div className="p-6 border-b flex justify-between items-center">
+        <h2 className="text-xl font-bold text-gray-900">Gestión de Categorías</h2>
+        <button
+          onClick={() => setNuevaCategoria(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+        >
+          <Plus className="h-5 w-5" />
+          <span>Nueva Categoría</span>
+        </button>
+      </div>
+
+      {(nuevaCategoria || editando) && (
+        <div className="p-6 border-b bg-gray-50">
+          <h3 className="text-lg font-bold mb-4">
+            {editando ? 'Editar Categoría' : 'Nueva Categoría'}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
+              <input
+                type="text"
+                value={formData.nombre}
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                placeholder="Ej: Electrónica"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Orden</label>
+              <input
+                type="number"
+                value={formData.orden}
+                onChange={(e) => setFormData({ ...formData, orden: parseInt(e.target.value) })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+              <textarea
+                value={formData.descripcion}
+                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                rows={2}
+              />
+            </div>
+            <div className="flex items-center">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.activo}
+                  onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
+                  className="w-5 h-5"
+                />
+                <span className="text-sm font-medium text-gray-700">Activo</span>
+              </label>
+            </div>
+          </div>
+          <div className="flex space-x-3 mt-4">
+            <button
+              onClick={guardarCategoria}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+            >
+              Guardar
+            </button>
+            <button
+              onClick={cancelar}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {categorias.map((categoria) => (
+            <div key={categoria.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="font-bold text-gray-900">{categoria.nombre}</h3>
+                  <p className="text-xs text-gray-500">Orden: {categoria.orden}</p>
+                  {categoria.usuario && (
+                    <p className="text-xs text-purple-600 mt-1">
+                      Usuario: {categoria.usuario.nombre_tienda}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col space-y-1">
+                  {categoria.usuario_id ? (
+                    <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                      Usuario
+                    </span>
+                  ) : (
+                    <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      Global
+                    </span>
+                  )}
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    categoria.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {categoria.activo ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
+              </div>
+              {categoria.descripcion && (
+                <p className="text-sm text-gray-600 mb-3">{categoria.descripcion}</p>
+              )}
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => editarCategoria(categoria)}
+                  className="flex-1 p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 flex items-center justify-center space-x-1"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span className="text-sm">Editar</span>
+                </button>
+                <button
+                  onClick={() => eliminarCategoria(categoria.id)}
+                  className="flex-1 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center justify-center space-x-1"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="text-sm">Eliminar</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

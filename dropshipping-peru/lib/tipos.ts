@@ -16,6 +16,7 @@ export interface Producto {
   precio_base: number;
   imagen_url: string;
   categoria: string;
+  categoria_id?: string;
   activo: boolean;
   es_catalogo: boolean;
   usuario_id?: string;
@@ -37,5 +38,15 @@ export interface Venta {
   cantidad: number;
   precio_total: number;
   ganancia: number;
+  created_at: string;
+}
+
+export interface Categoria {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  icono: string;
+  activo: boolean;
+  orden: number;
   created_at: string;
 }

@@ -26,14 +26,26 @@ export default function GeneradorFlyer({ producto, nombreTienda }: GeneradorFlye
 
     // Configurar canvas
     canvas.width = 1080;
-    canvas.height = 1080;
+    canvas.height = 1350;
 
-    // Fondo degradado
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#3B82F6');
-    gradient.addColorStop(1, '#1E40AF');
+    // Fondo degradado moderno
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(0.5, '#764ba2');
+    gradient.addColorStop(1, '#f093fb');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Patrón de círculos decorativos
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    for (let i = 0; i < 20; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const radius = Math.random() * 100 + 50;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     // Cargar y dibujar imagen del producto
     const img = new Image();
@@ -41,33 +53,126 @@ export default function GeneradorFlyer({ producto, nombreTienda }: GeneradorFlye
     img.src = producto.imagen_url;
     
     img.onload = () => {
-      // Dibujar imagen centrada
-      const imgSize = 600;
+      // Contenedor de imagen con sombra y borde redondeado
+      const imgSize = 700;
       const imgX = (canvas.width - imgSize) / 2;
-      const imgY = 150;
+      const imgY = 180;
       
-      // Fondo blanco para la imagen
+      // Sombra
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      ctx.shadowBlur = 30;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 15;
+      
+      // Fondo blanco con bordes redondeados
       ctx.fillStyle = 'white';
-      ctx.fillRect(imgX - 20, imgY - 20, imgSize + 40, imgSize + 40);
+      roundRect(ctx, imgX - 30, imgY - 30, imgSize + 60, imgSize + 60, 30);
+      ctx.fill();
       
+      // Resetear sombra
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      
+      // Dibujar imagen con bordes redondeados
+      ctx.save();
+      roundRect(ctx, imgX, imgY, imgSize, imgSize, 20);
+      ctx.clip();
       ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
+      ctx.restore();
 
-      // Nombre del producto
+      // Badge "OFERTA" en la esquina
+      ctx.fillStyle = '#EF4444';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      ctx.shadowBlur = 10;
+      roundRect(ctx, 80, 120, 200, 80, 15);
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 60px Arial';
+      ctx.font = 'bold 40px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(producto.nombre, canvas.width / 2, 850);
+      ctx.fillText('¡OFERTA!', 180, 170);
 
-      // Precio
-      ctx.fillStyle = '#FCD34D';
-      ctx.font = 'bold 80px Arial';
-      ctx.fillText(formatearPrecio(producto.precio), canvas.width / 2, 950);
-
-      // Nombre de la tienda
+      // Nombre del producto con fondo semi-transparente
+      const nombreY = 980;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      roundRect(ctx, 80, nombreY - 60, canvas.width - 160, 100, 20);
+      ctx.fill();
+      
       ctx.fillStyle = 'white';
-      ctx.font = '40px Arial';
-      ctx.fillText(nombreTienda, canvas.width / 2, 1020);
+      ctx.font = 'bold 55px Arial';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 5;
+      
+      // Dividir texto si es muy largo
+      const maxWidth = canvas.width - 200;
+      const words = producto.nombre.split(' ');
+      let line = '';
+      let lineY = nombreY;
+      
+      for (let i = 0; i < words.length; i++) {
+        const testLine = line + words[i] + ' ';
+        const metrics = ctx.measureText(testLine);
+        
+        if (metrics.width > maxWidth && i > 0) {
+          ctx.fillText(line, canvas.width / 2, lineY);
+          line = words[i] + ' ';
+          lineY += 60;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, canvas.width / 2, lineY);
+      
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // Precio con diseño destacado
+      const precioY = 1150;
+      
+      // Fondo del precio
+      ctx.fillStyle = '#FCD34D';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      ctx.shadowBlur = 15;
+      roundRect(ctx, 200, precioY - 70, canvas.width - 400, 120, 25);
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      
+      // Texto del precio
+      ctx.fillStyle = '#1F2937';
+      ctx.font = 'bold 90px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(formatearPrecio(producto.precio), canvas.width / 2, precioY + 10);
+
+      // Nombre de la tienda con icono
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 45px Arial';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 5;
+      ctx.fillText(`📱 ${nombreTienda}`, canvas.width / 2, 1280);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
     };
+  };
+
+  // Función auxiliar para dibujar rectángulos con bordes redondeados
+  const roundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) => {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
   };
 
   const descargarFlyer = () => {

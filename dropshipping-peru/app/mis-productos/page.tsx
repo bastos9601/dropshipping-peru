@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Navbar from '@/componentes/Navbar';
-import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { formatearPrecio } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -12,6 +12,7 @@ export default function MisProductos() {
   const router = useRouter();
   const [usuario, setUsuario] = useState<any>(null);
   const [productos, setProductos] = useState<any[]>([]);
+  const [categorias, setCategorias] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditando, setProductoEditando] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function MisProductos() {
     descripcion: '',
     precio_base: '',
     imagen_url: '',
-    categoria: ''
+    categoria_id: ''
   });
   const [subiendoImagen, setSubiendoImagen] = useState(false);
   const [archivoImagen, setArchivoImagen] = useState<File | null>(null);
@@ -50,6 +51,21 @@ export default function MisProductos() {
 
     setUsuario(perfil);
     cargarProductos(user.id);
+    cargarCategorias(user.id);
+  };
+
+  const cargarCategorias = async (userId: string) => {
+    // Cargar categorías globales y del usuario
+    const { data } = await supabase
+      .from('categorias')
+      .select('*')
+      .or(`usuario_id.is.null,usuario_id.eq.${userId}`)
+      .eq('activo', true)
+      .order('orden', { ascending: true });
+
+    if (data) {
+      setCategorias(data);
+    }
   };
 
   const cargarProductos = async (userId: string) => {
@@ -73,7 +89,7 @@ export default function MisProductos() {
         descripcion: producto.descripcion || '',
         precio_base: producto.precio_base.toString(),
         imagen_url: producto.imagen_url || '',
-        categoria: producto.categoria || ''
+        categoria_id: producto.categoria_id || ''
       });
     } else {
       setProductoEditando(null);
@@ -82,7 +98,7 @@ export default function MisProductos() {
         descripcion: '',
         precio_base: '',
         imagen_url: '',
-        categoria: ''
+        categoria_id: ''
       });
     }
     setArchivoImagen(null);
@@ -136,7 +152,7 @@ export default function MisProductos() {
       descripcion: formData.descripcion,
       precio_base: parseFloat(formData.precio_base),
       imagen_url: imagenUrl || formData.imagen_url,
-      categoria: formData.categoria,
+      categoria_id: formData.categoria_id || null,
       activo: true,
       es_catalogo: false,
       usuario_id: usuario.id
@@ -299,13 +315,29 @@ export default function MisProductos() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                  <input
-                    type="text"
-                    value={formData.categoria}
-                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-md"
-                    placeholder="Electrónica, Ropa, etc."
-                  />
+                  <select
+                    value={formData.categoria_id}
+                    onChange={(e) => setFormData({ ...formData, categoria_id: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Seleccionar categoría (opcional)</option>
+                    <optgroup label="Categorías del Sistema">
+                      {categorias.filter(c => !c.usuario_id).map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nombre}
+                        </option>
+                      ))}
+                    </optgroup>
+                    {categorias.some(c => c.usuario_id) && (
+                      <optgroup label="Mis Categorías">
+                        {categorias.filter(c => c.usuario_id).map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.nombre}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </select>
                 </div>
                 <div className="flex space-x-2">
                   <button
