@@ -365,9 +365,9 @@ export default function AdminCategorias() {
                 <p className="text-sm text-gray-600 mb-3">{categoria.descripcion}</p>
               )}
               
-              {categoria.usuario && (
+              {categoria.usuarios && (
                 <p className="text-xs text-gray-500 mb-3">
-                  Tienda: {categoria.usuario.nombre_tienda}
+                  Tienda: {categoria.usuarios.nombre_tienda}
                 </p>
               )}
               
