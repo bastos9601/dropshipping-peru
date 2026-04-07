@@ -12,6 +12,11 @@ interface Categoria {
   icono: string;
   activo: boolean;
   orden: number;
+  usuario_id: string | null;
+  usuarios?: {
+    email: string;
+    nombre_tienda: string;
+  };
 }
 
 const iconosDisponibles = Object.keys(iconosMap);

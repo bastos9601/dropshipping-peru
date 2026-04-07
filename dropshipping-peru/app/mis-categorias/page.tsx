@@ -168,8 +168,11 @@ export default function MisCategorias() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Cargando...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <img src="/favicon.png" alt="Logo" className="h-16 w-16 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Cargando...</p>
+        </div>
       </div>
     );
   }

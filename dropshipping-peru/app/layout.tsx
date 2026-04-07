@@ -16,6 +16,13 @@ export const metadata: Metadata = {
   title: "DropShip Perú - Crea tu tienda online gratis",
   description: "Plataforma de dropshipping para Perú. Crea tu tienda online en minutos sin inventario. Vende por WhatsApp y gana dinero desde casa.",
   keywords: "dropshipping, tienda online, ecommerce, Perú, vender por WhatsApp, negocio online",
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon.ico', type: 'image/x-icon' }
+    ],
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
