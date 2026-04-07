@@ -284,9 +284,9 @@ export default function AdminCategorias() {
                         <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
                           Usuario
                         </span>
-                        {categoria.usuario && (
+                        {categoria.usuarios && (
                           <div className="text-xs text-gray-500 mt-1">
-                            {categoria.usuario.nombre_tienda}
+                            {categoria.usuarios.nombre_tienda}
                           </div>
                         )}
                       </div>
