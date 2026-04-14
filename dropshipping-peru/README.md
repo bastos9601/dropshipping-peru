@@ -6,6 +6,7 @@ Plataforma de dropshipping enfocada en Perú que permite a cualquier persona cre
 
 - ✅ Registro e inicio de sesión con Supabase
 - ✅ Catálogo de productos precargados
+- ✅ **NUEVO: Importación automática desde Mercado Libre Perú**
 - ✅ Generador automático de tiendas personalizadas
 - ✅ Enlaces únicos para cada tienda (ej: `/mitienda`)
 - ✅ Integración con WhatsApp para ventas
@@ -13,6 +14,7 @@ Plataforma de dropshipping enfocada en Perú que permite a cualquier persona cre
 - ✅ Diseño responsive optimizado para móviles
 - ✅ Precios en soles peruanos (PEN)
 - ✅ Cálculo automático de ganancias
+- ✅ Configuración de márgenes personalizados
 
 ## 🛠️ Tecnologías
 
@@ -42,9 +44,11 @@ npm install
 
 1. Crea una cuenta en [Supabase](https://supabase.com)
 2. Crea un nuevo proyecto
-3. Ve a **SQL Editor** y ejecuta el archivo `supabase-schema.sql`
-4. Luego ejecuta `supabase-productos-iniciales.sql` para cargar productos de ejemplo
-5. Copia las credenciales de tu proyecto:
+3. Ve a **SQL Editor** y ejecuta los siguientes archivos en orden:
+   - `supabase-schema.sql` (estructura de base de datos)
+   - `supabase-productos-iniciales.sql` (productos de ejemplo)
+   - `supabase-mercadolibre.sql` (integración con Mercado Libre)
+4. Copia las credenciales de tu proyecto:
    - Ve a **Settings** > **API**
    - Copia `Project URL` y `anon public key`
 
@@ -70,9 +74,13 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ### Para vendedores:
 
 1. **Registrarse**: Crea una cuenta con email, contraseña, nombre de tienda y WhatsApp
-2. **Elegir productos**: Navega al catálogo y agrega productos a tu tienda
-3. **Compartir tienda**: Copia el enlace único de tu tienda y compártelo
-4. **Recibir pedidos**: Los clientes te contactarán por WhatsApp
+2. **Importar productos**: 
+   - Opción A: Usa "Importar ML" para buscar productos en Mercado Libre
+   - Opción B: Navega al catálogo y agrega productos precargados
+3. **Configurar precios**: Define tu margen de ganancia (recomendado 50-100%)
+4. **Compartir tienda**: Copia el enlace único de tu tienda y compártelo
+5. **Recibir pedidos**: Los clientes te contactarán por WhatsApp
+6. **Procesar ventas**: Compra el producto en ML y envía a tu cliente
 
 ### Para compradores:
 
@@ -161,8 +169,32 @@ Las contribuciones son bienvenidas. Por favor:
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
+## 🛒 Integración con Mercado Libre
+
+Esta plataforma incluye integración directa con la API de Mercado Libre Perú:
+
+- **Búsqueda en tiempo real**: Busca cualquier producto disponible en ML Perú
+- **Importación con un clic**: Agrega productos a tu tienda automáticamente
+- **Configuración de márgenes**: Define tu ganancia sobre el precio original
+- **Tracking de precios**: Guarda el precio original para comparar
+- **Links directos**: Acceso rápido al producto original para hacer pedidos
+
+### Cómo funciona:
+
+1. Busca productos en la página "Importar ML"
+2. Selecciona el producto que quieres vender
+3. Define tu margen de ganancia (ej: 80%)
+4. El sistema calcula automáticamente tu precio de venta
+5. Cuando vendas, compras el producto en ML y lo envías a tu cliente
+
+📖 **Guías detalladas:**
+- [Instrucciones de uso](./INSTRUCCIONES-MERCADOLIBRE.md)
+- [Ejemplos prácticos](./EJEMPLOS-MERCADOLIBRE.md)
+
 ## 📝 Próximas características
 
+- [x] Integración con Mercado Libre Perú
+- [ ] Actualización automática de precios
 - [ ] Generador de flyers automático
 - [ ] Sistema de analytics y métricas
 - [ ] Subdominios personalizados

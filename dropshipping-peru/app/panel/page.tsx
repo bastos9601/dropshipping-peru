@@ -200,6 +200,19 @@ export default function Panel() {
           </div>
         </div>
 
+        {/* Acceso rápido a pedidos */}
+        <Link href="/dashboard/pedidos" className="block mb-6 sm:mb-8">
+          <div className="bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold mb-2">📦 Gestiona tus Pedidos</h3>
+                <p className="text-purple-100">Ver y administrar todos los pedidos de tu tienda</p>
+              </div>
+              <ExternalLink className="h-8 w-8" />
+            </div>
+          </div>
+        </Link>
+
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Mis productos</h2>

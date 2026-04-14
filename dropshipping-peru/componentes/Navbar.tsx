@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useConfiguracion } from '@/lib/useConfiguracion';
 import { useState } from 'react';
+import NotificacionesPedidos from './NotificacionesPedidos';
 
 export default function Navbar({ usuario }: { usuario: any }) {
   const pathname = usePathname();
@@ -46,6 +47,16 @@ export default function Navbar({ usuario }: { usuario: any }) {
                   Panel
                 </Link>
                 <Link
+                  href="/dashboard/pedidos"
+                  className={`px-3 py-2 rounded text-sm font-medium ${
+                    pathname === '/dashboard/pedidos'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Pedidos
+                </Link>
+                <Link
                   href="/catalogo"
                   className={`px-3 py-2 rounded text-sm font-medium ${
                     pathname === '/catalogo'
@@ -55,6 +66,18 @@ export default function Navbar({ usuario }: { usuario: any }) {
                 >
                   Catálogo
                 </Link>
+                {usuario.es_admin && (
+                  <Link
+                    href="/importar-ml"
+                    className={`px-3 py-2 rounded text-sm font-medium ${
+                      pathname === '/importar-ml'
+                        ? 'bg-green-100 text-green-700'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    Importar ML
+                  </Link>
+                )}
                 <Link
                   href="/mis-productos"
                   className={`px-3 py-2 rounded text-sm font-medium ${
@@ -85,6 +108,16 @@ export default function Navbar({ usuario }: { usuario: any }) {
                 >
                   Mis Banners
                 </Link>
+                <Link
+                  href="/configuracion-pago"
+                  className={`px-3 py-2 rounded text-sm font-medium ${
+                    pathname === '/configuracion-pago'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Config. Pagos
+                </Link>
                 {usuario.es_admin && (
                   <Link
                     href="/admin"
@@ -97,6 +130,9 @@ export default function Navbar({ usuario }: { usuario: any }) {
                     Admin
                   </Link>
                 )}
+                <div className="relative">
+                  <NotificacionesPedidos usuarioId={usuario.id} />
+                </div>
                 <div className="flex items-center gap-2 text-xs text-gray-700 px-2 max-w-[150px]">
                   <User className="h-4 w-4" />
                   <span className="truncate">{usuario.email}</span>
@@ -145,6 +181,17 @@ export default function Navbar({ usuario }: { usuario: any }) {
                 Panel
               </Link>
               <Link
+                href="/dashboard/pedidos"
+                onClick={() => setMenuAbierto(false)}
+                className={`block px-3 py-2 rounded text-sm font-medium ${
+                  pathname === '/dashboard/pedidos'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Pedidos
+              </Link>
+              <Link
                 href="/catalogo"
                 onClick={() => setMenuAbierto(false)}
                 className={`block px-3 py-2 rounded text-sm font-medium ${
@@ -155,6 +202,19 @@ export default function Navbar({ usuario }: { usuario: any }) {
               >
                 Catálogo
               </Link>
+              {usuario.es_admin && (
+                <Link
+                  href="/importar-ml"
+                  onClick={() => setMenuAbierto(false)}
+                  className={`block px-3 py-2 rounded text-sm font-medium ${
+                    pathname === '/importar-ml'
+                      ? 'bg-green-100 text-green-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Importar ML
+                </Link>
+              )}
               <Link
                 href="/mis-productos"
                 onClick={() => setMenuAbierto(false)}
@@ -188,6 +248,17 @@ export default function Navbar({ usuario }: { usuario: any }) {
               >
                 Mis Banners
               </Link>
+              <Link
+                href="/configuracion-pago"
+                onClick={() => setMenuAbierto(false)}
+                className={`block px-3 py-2 rounded text-sm font-medium ${
+                  pathname === '/configuracion-pago'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Config. Pagos
+              </Link>
               {usuario.es_admin && (
                 <Link
                   href="/admin"
@@ -201,6 +272,11 @@ export default function Navbar({ usuario }: { usuario: any }) {
                   Admin
                 </Link>
               )}
+              <div className="border-t pt-2 pb-2">
+                <div className="px-3 py-2">
+                  <NotificacionesPedidos usuarioId={usuario.id} />
+                </div>
+              </div>
               <div className="flex items-center gap-2 text-sm text-gray-700 px-3 py-2 border-t">
                 <User className="h-4 w-4" />
                 <span className="truncate">{usuario.email}</span>
