@@ -168,7 +168,8 @@ export default function TiendaPublica() {
     const mensaje = generarMensajeWhatsApp(
       producto.nombre,
       precio,
-      tienda.nombre_tienda
+      tienda.nombre_tienda,
+      producto.imagen_url // Agregamos la URL de la imagen
     );
     window.open(`https://wa.me/${tienda.whatsapp}?text=${mensaje}`, '_blank');
   };

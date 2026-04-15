@@ -125,7 +125,8 @@ export default function ImportarML() {
           usuario_id: null, // NULL porque es del catálogo global
           ml_item_id: productoSeleccionado.id,
           ml_permalink: productoSeleccionado.productUrl,
-          ml_precio_original: productoSeleccionado.price
+          ml_precio_original: productoSeleccionado.price,
+          amazon_url: productoSeleccionado.productUrl // Agregar URL de Amazon
         }])
         .select()
         .single();

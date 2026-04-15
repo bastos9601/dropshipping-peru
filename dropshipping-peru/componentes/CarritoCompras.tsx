@@ -11,6 +11,7 @@ interface ProductoCarrito {
   nombre: string;
   precio: number;
   imagen_url: string;
+  amazon_url?: string; // Agregar URL de Amazon como opcional
   cantidad: number;
 }
 
@@ -43,6 +44,7 @@ const CarritoCompras = forwardRef((props: CarritoComprasProps, ref) => {
               nombre: producto.nombre,
               precio: precio,
               imagen_url: producto.imagen_url,
+              amazon_url: producto.amazon_url, // Agregar URL de Amazon
               cantidad: 1,
             },
           ];

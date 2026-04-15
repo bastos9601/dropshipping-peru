@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatearPrecio } from '@/lib/utils';
-import { Package, Eye, CheckCircle, Truck, XCircle, Clock, Search, Filter, MessageCircle } from 'lucide-react';
+import { Package, Eye, CheckCircle, Truck, XCircle, Clock, Search, Filter, MessageCircle, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Navbar from '@/componentes/Navbar';
 import { useRouter } from 'next/navigation';
@@ -547,22 +547,41 @@ function DetallesPedidoModal({
             <h3 className="font-semibold text-gray-900 mb-3">Productos</h3>
             <div className="space-y-3">
               {pedido.productos.map((producto: any, index: number) => (
-                <div key={index} className="flex gap-4 bg-gray-50 rounded-lg p-3">
-                  <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden">
-                    <Image
-                      src={producto.imagen_url}
-                      alt={producto.nombre}
-                      fill
-                      className="object-cover"
-                    />
+                <div key={index} className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex gap-4">
+                    <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden">
+                      <Image
+                        src={producto.imagen_url}
+                        alt={producto.nombre}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{producto.nombre}</p>
+                      <p className="text-sm text-gray-600">Cantidad: {producto.cantidad}</p>
+                      <p className="text-sm font-semibold text-blue-600">
+                        {formatearPrecio(producto.precio * producto.cantidad)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">{producto.nombre}</p>
-                    <p className="text-sm text-gray-600">Cantidad: {producto.cantidad}</p>
-                    <p className="text-sm font-semibold text-blue-600">
-                      {formatearPrecio(producto.precio * producto.cantidad)}
-                    </p>
-                  </div>
+                  <button
+                    onClick={() => {
+                      if (producto.amazon_url) {
+                        // Si tiene URL guardada, ir directo
+                        window.open(producto.amazon_url, '_blank');
+                      } else {
+                        // Si no, buscar en Amazon con el nombre exacto
+                        // Usar amazon.com.pe (Amazon Perú)
+                        const searchQuery = encodeURIComponent(producto.nombre);
+                        window.open(`https://www.amazon.com.pe/s?k=${searchQuery}`, '_blank');
+                      }
+                    }}
+                    className="mt-3 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span>{producto.amazon_url ? 'Comprar en Amazon' : 'Buscar en Amazon Perú'}</span>
+                  </button>
                 </div>
               ))}
             </div>

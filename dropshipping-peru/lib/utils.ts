@@ -14,11 +14,18 @@ export function formatearPrecio(precio: number): string {
 export function generarMensajeWhatsApp(
   nombreProducto: string,
   precio: number,
-  nombreTienda: string
+  nombreTienda: string,
+  imagenUrl?: string
 ): string {
-  return encodeURIComponent(
-    `¡Hola! 👋\n\nEstoy interesado en:\n📦 ${nombreProducto}\n💰 Precio: S/ ${precio.toFixed(2)}\n\n🏪 Tienda: ${nombreTienda}\n\n¿Está disponible?`
-  );
+  let mensaje = `¡Hola! 👋\n\nEstoy interesado en:\n📦 ${nombreProducto}\n💰 Precio: S/ ${precio.toFixed(2)}`;
+  
+  if (imagenUrl) {
+    mensaje += `\n\n🖼️ Ver producto: ${imagenUrl}`;
+  }
+  
+  mensaje += `\n\n🏪 Tienda: ${nombreTienda}\n\n¿Está disponible?`;
+  
+  return encodeURIComponent(mensaje);
 }
 
 export function calcularGanancia(precioVenta: number, precioBase: number): number {

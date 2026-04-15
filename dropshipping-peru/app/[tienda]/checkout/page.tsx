@@ -12,6 +12,7 @@ interface ProductoCarrito {
   nombre: string;
   precio: number;
   imagen_url: string;
+  amazon_url?: string; // Agregar URL de Amazon como opcional
   cantidad: number;
 }
 
